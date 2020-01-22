@@ -1,10 +1,22 @@
+import java.io.FileReader;
 
-public class Main {
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		// test
 
+public class Main extends JFrame {
+	
+	
+	public static void main(String[] args) throws Exception {
+
+		//String[] data = InputData.readTextFile("test.txt");
+		
+		
+		MainFrame frame = new MainFrame();
+		frame.buildFrame();
+	
 	}
-
+	
+	
 }
