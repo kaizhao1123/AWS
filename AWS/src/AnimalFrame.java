@@ -13,8 +13,24 @@ import javax.swing.JScrollPane;
 
 public class AnimalFrame extends JFrame{
 	
+	
+	String[] columnNamess = {"<html> Animal <br> (species) </html>",
+									"<html>Animal <br> (type) </html>",
+									"<html>Weight <br> (lbs) </html>",
+									"<html>Manure <br> (cu.ft/day/AU) </html>",
+									"<html> VS <br> (lbs/day/AU) </html>",
+									"<html> TS <br> (lbs/day/AU) </html>",
+									"<html> Manure <br> (cu.ft/day) </html>",
+									"<html> VS <br> (lbs/day) </html>",
+									"<html> TS <br> (lbs/day) </html>",
+									"<html>Manure <br> (lbs/day) </html>"};
+	Object[][] dataa = {{"Feeder Calf","Beef","0","0","0","0","0","0","0","0","0"},
+						{"Feeder Beef","Beef","1","2","3","4","5","0","0","0","0"},
+						{"Feeder Beef","Beef","1","2","3","4","5","0","0","0","0"},
+						{"Feeder Beef","Beef","1","2","3","4","5","0","0","0","0"}}; 
+
 	public void buildAnimalFrame() {
-		
+
 		GridBagLayout grid = new GridBagLayout();
 		GridBagConstraints gbc = new GridBagConstraints();		
 		this.setLayout(grid);
@@ -45,20 +61,7 @@ public class AnimalFrame extends JFrame{
 		gbc.gridx = 0;
 		gbc.gridy = 2;
 		//gbc.ipadx = 500;
-		String[] columnNamess = {"<html> Animal <br> (species) </html>",
-										"<html>Animal <br> (type) </html>",
-										"<html>Weight <br> (lbs) </html>",
-										"<html>Manure <br> (cu.ft/day/AU) </html>",
-										"<html> VS <br> (lbs/day/AU) </html>",
-										"<html> TS <br> (lbs/day/AU) </html>",
-										"<html> Manure <br> (cu.ft/day) </html>",
-										"<html> VS <br> (lbs/day) </html>",
-										"<html> TS <br> (lbs/day) </html>",
-										"<html>Manure <br> (lbs/day) </html>"};
-		String[][] dataa = {{"Feeder Calf","Beef","0","0","0","0","0","0","0","0","0"},
-							{"Feeder Beef","Beef","1","2","3","4","5","0","0","0","0"},
-							{"Feeder Beef","Beef","1","2","3","4","5","0","0","0","0"},
-							{"Feeder Beef","Beef","1","2","3","4","5","0","0","0","0"}};
+
 
 		JPanel jtab = new JPanel();
 		jtab.setLayout(new BorderLayout());	
@@ -84,11 +87,7 @@ public class AnimalFrame extends JFrame{
 		p2.add(l2);p2.add(l3);p2.add(l4);
 		this.add(p2,gbc);
 		
-		
-
-		
-		
-		
+	
 		setSize(700,400);
 		setPreferredSize(getSize());
 		setResizable(false);

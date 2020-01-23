@@ -25,6 +25,15 @@ import javax.swing.JTextField;
 
 public class ClimateFrame{
 	
+	String[] columnNamess;
+	Object[][] dataa;
+	JFrame jf;
+	GridBagConstraints c;
+	JPanel jtab = null;
+	MyTable mt = null;
+	JTable nmt = null;
+	JScrollPane scrollPane = null;
+	
 	String[] s = {" ","Prec(in)","Evap(in)"};
 	Object[][] o = {
 	 		    {"January","1.20","1.41"},    
@@ -55,34 +64,20 @@ public class ClimateFrame{
             {"November","0.00","0.00"}, 
             {"December","0.00","0.00"},
 	};
-	
-	
+			
 	JTextField tf1 = new JTextField("7.6");
 	JTextField tf2 = new JTextField("0");
 	JTextField tf3 = new JTextField("0");
 	JTextField tf4 = new JTextField("0");
 	JTextField tf5 = new JTextField("6.2");
 
-	String[] columnNamess;
-	Object[][] dataa;
 	
-	MyTable mt;
-	
-	
-	//JPanel jtab = new JPanel();
-	//jtab.setLayout(new BorderLayout());	
-	//MyTable mm = new MyTable();
-	//JTable t = mm.buildMyTable(columnData, tableData);
-	//JScrollPane scrollPane;
-	
-	
-	public void buildClimateFrame() {
+	public void buildClimateFrame() {		
 		
-		JFrame jf = new JFrame();
-		
+		jf = new JFrame();
 		
 		GridBagLayout grid = new GridBagLayout();
-		GridBagConstraints c = new GridBagConstraints();		
+		c = new GridBagConstraints();		
 		jf.setLayout(grid);
 		jf.setTitle("Climate Selection");
 		
@@ -125,16 +120,10 @@ public class ClimateFrame{
 					tf3.setText("0");
 					tf4.setText("0");
 					tf5.setText("6.2");
-					
-					String[] columnNamess = s;
-					Object[][] dataa = o;
-					
-					//jtab.setLayout(new BorderLayout());	
-					//MyTable mm = new MyTable();
-					//t = mm.buildMyTable(columnNamess,dataa);
-					//scrollPane = new JScrollPane(t);
-					//jtab.add(scrollPane,BorderLayout.CENTER);
-			       // this.add(jtab,c);
+										
+					AddTable(s, o);
+			        
+			        System.out.println("aaaaaaaaaaa");
 					
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
@@ -156,14 +145,10 @@ public class ClimateFrame{
 					tf4.setText("0");
 					tf5.setText("0");
 					
-					String[] columnNamess = s;
-					Object[][] dataa = o2;
-					
-					//t = mm.buildMyTable(columnNamess,dataa);
-					//jtab.setLayout(new BorderLayout());	
-					//MyTable mm = new MyTable();
-					//scrollPane = new JScrollPane(t);
-			        //jtab.add(scrollPane,BorderLayout.CENTER);
+					AddTable(s, o2);
+			        
+				
+			        System.out.println("bbbbb");
 			        
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
@@ -186,7 +171,8 @@ public class ClimateFrame{
 		mnpe.setLayout(new GridLayout(3,2));
 		JRadioButton r3 = new JRadioButton("If prec - evap < 0 then set net value to 0       ");
 		JRadioButton r4 = new JRadioButton("Always set net value to prec-evap");
-		JRadioButton r5 = new JRadioButton("Ignore evap value, and use prec. only");			ButtonGroup bg2 = new ButtonGroup();
+		JRadioButton r5 = new JRadioButton("Ignore evap value, and use prec. only");
+		ButtonGroup bg2 = new ButtonGroup();
 		bg2.add(r3);bg2.add(r4);bg2.add(r5);
 		mnpe.add(r3);mnpe.add(r4);mnpe.add(r5);	
 		r3.setSelected(true);
@@ -243,25 +229,10 @@ public class ClimateFrame{
 		c.gridwidth = 2;
 		c.gridheight = 7;
 		c.gridx = 1;
-		c.gridy = 1;
-		
-		//String[] columnNamess = columnData;
-		//String[][] dataa = tableData;
-
-		JPanel jtab = new JPanel();
-
-		jtab.setLayout(new BorderLayout());	
-		mt = new MyTable();
-		mt.model.buildModel(columnNamess, dataa);
-		//mt.buildMyTable();
-
-		JScrollPane scrollPane = new JScrollPane(mt.buildMyTable(columnNamess, dataa));
-		//JScrollPane scrollPane = new JScrollPane();
-		
-		//JScrollPane s = new JScrollPane(mt);
-		
-        jtab.add(scrollPane,BorderLayout.CENTER);
-        jf.add(jtab,c);
+		c.gridy = 1;		
+		AddTable(s, o);
+        
+        System.out.println("ccccccccc");
 		
         ////the panel for ***other***
         c.gridwidth = 1;
@@ -269,25 +240,17 @@ public class ClimateFrame{
 		c.gridx = 0;
 		c.gridy = 3;
         JPanel other = new JPanel();
-		//other.setLayout(new GridLayout(1,2));
-		//other.setLayout(new BorderLayout());
 		JLabel precipitation = new JLabel("25 Yr. -24 Hr. Storm Precipitation:");
-		//JTextField tf1 = new JTextField();
 
 		tf1.setPreferredSize(new Dimension(50,20));
-		//tf1.setMinimumSize(new Dimension(20,20));
-		//tf1.setPreferredSize(new Dimension(50,20));
 		JLabel inches = new JLabel("inches");		
-		//JLabel rates = new JLabel("Lagoon Loading Rates");
 		other.add(precipitation);other.add(tf1);other.add(inches);
-		//other.add(rates);other.add(new JLabel(""));other.add(new JLabel(""));
 		other.setPreferredSize(new Dimension(300,50));
         jf.add(other,c);
         
 		//// the panel for ****rational design method****
         c.gridx = 0;
 		c.gridy = 4;		
-		//c.gridheight = 3;
 		JPanel rational = new JPanel();
 		rational.setLayout(new GridLayout(3,3));
 		JLabel kval = new JLabel("Barth KVAL:");
@@ -296,9 +259,6 @@ public class ClimateFrame{
 		JLabel jl1 = new JLabel("lbx VS/cu.ft/day");
 		JLabel jl2 = new JLabel("lbx VS/cu.ft/day");
 		
-		//JTextField tf2 = new JTextField();
-		//JTextField tf3 = new JTextField();
-		//JTextField tf4 = new JTextField();
 		tf2.setPreferredSize(new Dimension(50,20));
 		tf3.setPreferredSize(new Dimension(50,20));
 		tf4.setPreferredSize(new Dimension(50,20));
@@ -316,11 +276,8 @@ public class ClimateFrame{
 		
 		JPanel nrcs = new JPanel();
 		nrcs.setLayout(new GridLayout(1,3));
-		//GridBagConstraints cc = new GridBagConstraints();
-		//cc.fill= GridBagConstraints.NONE;
 		JLabel alr = new JLabel("Anaerobic Load Rate:");
 		JLabel jl3 = new JLabel("lbs VS/1000 cu.ft/day");
-		//JTextField tf5 = new JTextField();
 		
 		tf5.setPreferredSize(new Dimension(50,20));
 		nrcs.add(alr);nrcs.add(tf5);nrcs.add(jl3);
@@ -328,46 +285,14 @@ public class ClimateFrame{
         jf.add(nrcs,c);
         
 		//// the panel for ***button***
-        //c.gridwidth = GridBagConstraints.REMAINDER;
         c.gridx = 1;
 		c.gridy = 8;
 		JPanel jbtn = new JPanel();
-		//jbtn.setLayout(new BorderLayout());
 		JButton bHelp = new JButton("Help");
 		JButton bOK = new JButton("OK");
 		bOK.addActionListener(new ActionListener() ////After selected the data source, open the climate frame with data;
 				{
-					public void actionPerformed(ActionEvent e){
-						/*
-						//if(ds.getSelectedIndex() == 0){
-						//	System.out.print("Nothing selected"); /////////must select one data source, otherwise, the button doesn't work					
-						//}
-						//else if(ds.getSelectedIndex() == 1 && st.getSelectedIndex() != 0){ /////////select the first data source
-							try {
-								data = InputData.readTextFile("test.txt") ;
-							} catch (Exception e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
-							}
-							for(String s : data){
-								System.out.print(s);
-							}
-							ClimateFrame cf = new ClimateFrame();
-							cf.buildClimateFrame();
-						//}
-						//else if(ds.getSelectedIndex() == 2 && st.getSelectedIndex() != 0){/////////select the second data source
-							
-							//try {
-							//	data = InputData.readTextFile("test1.txt");
-							//} catch (Exception e1) {
-								
-							//	e1.printStackTrace();
-							//}
-							//for(String s : data){
-							//	System.out.print(s);
-							//}
-				
-							 */
+					public void actionPerformed(ActionEvent e){						
 							AnimalFrame af = new AnimalFrame();
 							af.buildAnimalFrame();
 						}
@@ -381,16 +306,33 @@ public class ClimateFrame{
         jf.add(jbtn,c);
  
 		
-		
-		
-		
-		
-		
 		jf.setSize(600,500);
 		//setPreferredSize(getSize());
 		jf.setResizable(false);
 		jf.setVisible(true);
 		//setDefaultCloseOperation(EXIT_ON_CLOSE);
+	}
+	
+	private void AddTable(String[] s, Object[][] o) {
+		
+		if (jtab != null) {
+			jf.remove(jtab);
+			jtab = null;
+			mt = null;
+			nmt = null;
+			scrollPane = null;
+			
+		}
+		
+		jtab = new JPanel();
+		jtab.setLayout(new BorderLayout());	
+		
+		mt = new MyTable();
+		nmt = mt.buildMyTable(s, o);				
+		scrollPane = new JScrollPane(nmt);		
+        jtab.add(scrollPane,BorderLayout.CENTER);
+        jf.add(jtab,c);
+				
 	}
 
 }

@@ -5,25 +5,7 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 
 public class TableModel extends AbstractTableModel{
-	
 
-	/*
-     String[] n = {" ","Prec(in)","Evap(in)"};
-	 Object[][] p = {
-		 		    {"January","1.20","1.41"},    
-		            {"February","1.22","1.41"}, 
-		            {"March","3.13","2.82"}, 
-		            {"April","3.38","4.23"}, 
-		            {"May","4.82","5.64"}, 
-		            {"June","5.44","6.58"}, 
-		            {"July","3.90","7.05"}, 
-		            {"August","4.17","6.58"}, 
-		            {"September","4.81","4.70"}, 
-		            {"October","3.79","3.29"}, 
-		            {"November","2.58","1.88"}, 
-		            {"December","1.48","1.41"},
-		};*/
-     
 	 String[] n;
 	 Object[][] p;
 	 
@@ -31,7 +13,6 @@ public class TableModel extends AbstractTableModel{
 		 n = s;
 		 p = o;
 	 }
-
 	 
      public void addRow(String[] s){
    	 

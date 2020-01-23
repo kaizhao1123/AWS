@@ -16,6 +16,41 @@ import javax.swing.JTextField;
 
 public class MainFrame extends JFrame{
 
+	String[] s = {" ","Prec(in)","Evap(in)"};
+	Object[][] o = {
+	 		    {"January","1.20","1.41"},    
+	            {"February","1.22","1.41"}, 
+	            {"March","3.13","2.82"}, 
+	            {"April","3.38","4.23"}, 
+	            {"May","4.82","5.64"}, 
+	            {"June","5.44","6.58"}, 
+	            {"July","3.90","7.05"}, 
+	            {"August","4.17","6.58"}, 
+	            {"September","4.81","4.70"}, 
+	            {"October","3.79","3.29"}, 
+	            {"November","2.58","1.88"}, 
+	            {"December","1.48","1.41"},
+	};
+	
+	Object[][] o2 = {
+ 		    {"January","0.00","0.00"},    
+            {"February","0.00","0.00"}, 
+            {"March","0.00","0.00"}, 
+            {"April","0.00","0.00"}, 
+            {"May","0.00","0.00"}, 
+            {"June","0.00","0.00"}, 
+            {"July","0.00","0.00"}, 
+            {"August","0.00","0.00"}, 
+            {"September","0.00","0.00"}, 
+            {"October","0.00","0.00"}, 
+            {"November","0.00","0.00"}, 
+            {"December","0.00","0.00"},
+	};
+	
+	
+	
+	
+	
 	String [] data = new String[] {};
 	String ownerName;
 	String designerName;
