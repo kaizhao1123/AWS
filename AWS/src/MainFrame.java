@@ -16,41 +16,6 @@ import javax.swing.JTextField;
 
 public class MainFrame extends JFrame{
 
-	String[] s = {" ","Prec(in)","Evap(in)"};
-	Object[][] o = {
-	 		    {"January","1.20","1.41"},    
-	            {"February","1.22","1.41"}, 
-	            {"March","3.13","2.82"}, 
-	            {"April","3.38","4.23"}, 
-	            {"May","4.82","5.64"}, 
-	            {"June","5.44","6.58"}, 
-	            {"July","3.90","7.05"}, 
-	            {"August","4.17","6.58"}, 
-	            {"September","4.81","4.70"}, 
-	            {"October","3.79","3.29"}, 
-	            {"November","2.58","1.88"}, 
-	            {"December","1.48","1.41"},
-	};
-	
-	Object[][] o2 = {
- 		    {"January","0.00","0.00"},    
-            {"February","0.00","0.00"}, 
-            {"March","0.00","0.00"}, 
-            {"April","0.00","0.00"}, 
-            {"May","0.00","0.00"}, 
-            {"June","0.00","0.00"}, 
-            {"July","0.00","0.00"}, 
-            {"August","0.00","0.00"}, 
-            {"September","0.00","0.00"}, 
-            {"October","0.00","0.00"}, 
-            {"November","0.00","0.00"}, 
-            {"December","0.00","0.00"},
-	};
-	
-	
-	
-	
-	
 	String [] data = new String[] {};
 	String ownerName;
 	String designerName;
@@ -62,40 +27,37 @@ public class MainFrame extends JFrame{
 		this.setLayout(grid);
 		setTitle("New");
 		
+		// set the gap of each component
 		gbc.insets = new Insets(10,10,0,0); 
-
 		
+		// add *** Landowner ***
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.gridx = 1;
 		gbc.gridy = 0;
 		this.add(new JLabel("Landowner:"), gbc);
 		
-
 		gbc.fill = GridBagConstraints.HORIZONTAL;
-		//gbc.ipadx = 70; 
 		gbc.gridx = 3;
 		gbc.gridy = 0;		
 		this.add(new JTextField(),gbc);
 		
-		
+		// add *** Designer ***		
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.gridx = 1;
 		gbc.gridy = 2;
 		this.add(new JLabel("Designer:"), gbc);
-		
-		
+				
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.gridx = 3;
 		gbc.gridy = 2;		
 		this.add(new JTextField(),gbc);
 		
-		
+		// add *** Data Source ***
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.gridx = 1;
 		gbc.gridy = 4;
 		this.add(new JLabel("Data Source:"), gbc);
-				
-		 
+						 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.gridx = 3;
 		gbc.gridy = 4;
@@ -115,13 +77,12 @@ public class MainFrame extends JFrame{
 		});
 		this.add(ds, gbc);
 		
-		
+		// add  ***Select State ***
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.gridx = 1;
 		gbc.gridy = 6;
 		this.add(new JLabel("Select State:"), gbc);
-		
-		
+				
 		gbc.fill = GridBagConstraints.WEST;
 		gbc.gridx = 3;
 		gbc.gridy = 6;
@@ -147,7 +108,7 @@ public class MainFrame extends JFrame{
 		});
 		this.add(st, gbc);
 		
-		
+		// add  *** Operating Period Setup ***
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.gridx = 3;
 		gbc.gridy = 8;
@@ -158,6 +119,7 @@ public class MainFrame extends JFrame{
 		gbc.gridy = 10;
 		this.add(new JLabel("<html> Click button above to define or <br> modify the operating period(s) </html>"), gbc);
 	
+		// add  *** OK ***
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.gridx = 5;
 		gbc.gridy = 8;
@@ -202,18 +164,22 @@ public class MainFrame extends JFrame{
 			
 		});
 		this.add(b1, gbc);
+		
+		// add  *** Cancel ***
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.gridx = 5;
 		gbc.gridy = 10;
 		gbc.ipadx = 20;
 		this.add(new JButton("Cancel"), gbc);
+		
+		// add  *** Help ***
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.gridx = 5;
 		gbc.gridy = 12;
 		gbc.ipadx = 20;
 		this.add(new JButton("Help"), gbc);
 		
-	
+		// set this frame ***
 		setSize(500,400);
 		setPreferredSize(getSize());
 		setResizable(false);

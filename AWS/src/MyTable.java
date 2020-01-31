@@ -12,6 +12,10 @@ import javax.swing.table.DefaultTableCellRenderer;
 
 public class MyTable implements TableModelListener{
 
+	
+	//implements TableModelListener
+	
+	
 	JTable ntable;
 	TableModel model;
 	
@@ -29,6 +33,7 @@ public class MyTable implements TableModelListener{
 		
 		model = new TableModel();
 		model.buildModel(columnNamess,dataa);
+		
 	    model.addTableModelListener(this);
 	    model.addRow(model.getEachSum());
 				
@@ -36,36 +41,29 @@ public class MyTable implements TableModelListener{
 				
 		int rowcount = ntable.getRowCount();
 		int colcount = ntable.getColumnCount();
-		//setColor(0,rowcount,1,2, Color.yellow);
+		//setColor(0,rowcount-3,1,2, Color.yellow);
 		
-		//setColor(rowcount,rowcount,1,colcount,Color.pink);	
-		
-	
-		model.getColumnClass(0);
-		
-		for(int i = 1; i < colcount; i ++) {
+		setColor(rowcount-1,rowcount-1,1,colcount,Color.pink);	
 			
-			setColor(rowcount-1,i,Color.pink);
-		}
-		
-		
+		//model.getColumnClass(0);
 		
 		ntable.setVisible(true);
 		ntable.setSize(100,100);
 		return ntable;
 	}
 
-	private void setColor(int indexr, int indexcol, Color ncolor){
+	
+	private void setColor(int row_start, int row_end, int col_start, int col_end, Color ncolor){
 		try {
 			DefaultTableCellRenderer tcr = new DefaultTableCellRenderer(){				
 				public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,boolean hasFocus,int row,int column){
 					Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-					if(row == indexr && column == indexcol) {
+					if(row == row_start && column == col_start) {
 						c.setBackground(ncolor);
 					}
 					
-					/*
-					if(row >= indexr && row <= indexendr && column >= indexcol&& column <= indexendcol){
+					
+					if(row >= row_start && row <= row_end && column >= col_start && column <= col_end){
 						setBackground(ncolor);
 						//cc = ncolor;
 					}
@@ -73,22 +71,22 @@ public class MyTable implements TableModelListener{
 						setBackground(null);
 					}
 					else 
-						setBackground(cc);*/
+						setBackground(cc);
 
 					
 					return c;
 				}
 			};	
-			/*
-			for(int i = 0; i < indexendcol ; i++) {
-				ntable.setDefaultRenderer(ntable.getColumnClass(i), tcr);
-				
-			}	*/
+			
+			for(int i = 0; i < col_end ; i++) {
+				ntable.setDefaultRenderer(ntable.getColumnClass(i), tcr);				
+			}	
 
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}
 	}
+	
 
 
 	@Override

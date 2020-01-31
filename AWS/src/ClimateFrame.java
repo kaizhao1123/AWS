@@ -25,17 +25,20 @@ import javax.swing.JTextField;
 
 public class ClimateFrame{
 	
-	String[] columnNamess;
-	Object[][] dataa;
-	JFrame jf;
-	GridBagConstraints c;
-	JPanel jtab = null;
-	MyTable mt = null;
-	JTable nmt = null;
-	JScrollPane scrollPane = null;
+	private String[] columnName;
+	private Object[][] data;
+	private JFrame jf;
+	private GridBagConstraints c;
 	
+	MyTable mt1 = new MyTable();  // used for download the existing AWM data
+	MyTable mt2 = new MyTable();  // used for input data by the custom
+	
+	JTable databaseTable;
+	JTable customTable;
+	JScrollPane scrollPane;
+
 	String[] s = {" ","Prec(in)","Evap(in)"};
-	Object[][] o = {
+	Object[][] o1 = {
 	 		    {"January","1.20","1.41"},    
 	            {"February","1.22","1.41"}, 
 	            {"March","3.13","2.82"}, 
@@ -64,12 +67,15 @@ public class ClimateFrame{
             {"November","0.00","0.00"}, 
             {"December","0.00","0.00"},
 	};
-			
-	JTextField tf1 = new JTextField("7.6");
-	JTextField tf2 = new JTextField("0");
-	JTextField tf3 = new JTextField("0");
-	JTextField tf4 = new JTextField("0");
-	JTextField tf5 = new JTextField("6.2");
+	
+	// the values in different textfields
+	JTextField valueOfPre;
+	JTextField valueOfKVAL;
+	JTextField valueOfOCV;
+	JTextField valueOfLRV;
+	JTextField valueOfAna;
+
+
 
 	
 	public void buildClimateFrame() {		
@@ -90,12 +96,13 @@ public class ClimateFrame{
 		    };
 
 		
-		c.insets = new Insets(10,10,0,0); 
+		c.insets = new Insets(10,10,10,10); 
 		
 		//// the panel for "Select Climate Data Source"	
 		c.fill = GridBagConstraints.BOTH;
 		c.anchor = GridBagConstraints.WEST;
 		c.weightx = 1;
+		
 		c.gridwidth = 1;
 		
 		c.gridx = 0;
@@ -109,21 +116,22 @@ public class ClimateFrame{
 		bg1.add(r1);bg1.add(r2);
 		scds.add(r1);scds.add(r2);
 		r1.setSelected(true);
-		r1.addActionListener(sliceActionListener);		
+		//r1.addActionListener(sliceActionListener);		
 		r1.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e){
 				try {
-					r1.setSelected(true);					
-					tf1.setText("7.6");
-					tf2.setText("0");
-					tf3.setText("0");
-					tf4.setText("0");
-					tf5.setText("6.2");
-										
-					AddTable(s, o);
-			        
-			        System.out.println("aaaaaaaaaaa");
+					r1.setSelected(true);
+					
+					valueOfPre.setText("7.6");
+					valueOfKVAL.setText("0");
+					valueOfOCV.setText("0");
+					valueOfLRV.setText("0");
+					valueOfAna.setText("6.2");
+
+					scrollPane.setViewportView(databaseTable);
+					
+					System.out.println("aaaaaaaaaaa");
 					
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
@@ -133,21 +141,20 @@ public class ClimateFrame{
 		});
 
 		
-		r2.addActionListener(sliceActionListener);
+		//r2.addActionListener(sliceActionListener);
 		r2.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e){
 				try {
 					r2.setSelected(true);					
-					tf1.setText("0");
-					tf2.setText("0");
-					tf3.setText("0");
-					tf4.setText("0");
-					tf5.setText("0");
-					
-					AddTable(s, o2);
-			        
-				
+					valueOfPre.setText("0");
+					valueOfKVAL.setText("0");
+					valueOfOCV.setText("0");
+					valueOfLRV.setText("0");
+					valueOfAna.setText("0");
+
+					scrollPane.setViewportView(customTable);
+
 			        System.out.println("bbbbb");
 			        
 				} catch (Exception e1) {
@@ -185,6 +192,7 @@ public class ClimateFrame{
 		
 		//// the panel for ***place***
 		c.gridwidth = 1;
+		//c.gridheight = 2;
 		c.gridx = 0;
 		c.gridy = 2;
 		JPanel place = new JPanel();
@@ -229,8 +237,19 @@ public class ClimateFrame{
 		c.gridwidth = 2;
 		c.gridheight = 7;
 		c.gridx = 1;
-		c.gridy = 1;		
-		AddTable(s, o);
+		c.gridy = 1;	
+		
+		JPanel jtab = new JPanel();
+		jtab.setLayout(new BorderLayout());	
+				
+		databaseTable = mt1.buildMyTable(s, o1);	
+		customTable = mt2.buildMyTable(s, o2);
+
+		scrollPane = new JScrollPane(databaseTable);
+	
+        jtab.add(scrollPane,BorderLayout.CENTER);
+        jf.add(jtab,c);
+		//AddTable(s, o);
         
         System.out.println("ccccccccc");
 		
@@ -238,19 +257,21 @@ public class ClimateFrame{
         c.gridwidth = 1;
         c.gridheight = 1;
 		c.gridx = 0;
-		c.gridy = 3;
+		c.gridy = 4;
         JPanel other = new JPanel();
 		JLabel precipitation = new JLabel("25 Yr. -24 Hr. Storm Precipitation:");
-
-		tf1.setPreferredSize(new Dimension(50,20));
+		valueOfPre = new JTextField();
+		valueOfPre.setPreferredSize(new Dimension(50,20));
 		JLabel inches = new JLabel("inches");		
-		other.add(precipitation);other.add(tf1);other.add(inches);
+		other.add(precipitation);other.add(valueOfPre);other.add(inches);
 		other.setPreferredSize(new Dimension(300,50));
         jf.add(other,c);
         
 		//// the panel for ****rational design method****
+        //c.gridwidth = 3;
+        //c.gridheight = 2;
         c.gridx = 0;
-		c.gridy = 4;		
+		c.gridy = 6;		
 		JPanel rational = new JPanel();
 		rational.setLayout(new GridLayout(3,3));
 		JLabel kval = new JLabel("Barth KVAL:");
@@ -258,19 +279,22 @@ public class ClimateFrame{
 		JLabel lrv = new JLabel("LRV Max:");
 		JLabel jl1 = new JLabel("lbx VS/cu.ft/day");
 		JLabel jl2 = new JLabel("lbx VS/cu.ft/day");
-		
-		tf2.setPreferredSize(new Dimension(50,20));
-		tf3.setPreferredSize(new Dimension(50,20));
-		tf4.setPreferredSize(new Dimension(50,20));
+		valueOfKVAL = new JTextField();
+		valueOfOCV = new JTextField();
+		valueOfLRV = new JTextField();
+		valueOfKVAL.setPreferredSize(new Dimension(50,20));
+		valueOfOCV.setPreferredSize(new Dimension(50,20));
+		valueOfLRV.setPreferredSize(new Dimension(50,20));
 
-		rational.add(kval);rational.add(tf2);rational.add(new JLabel(""));
-		rational.add(ocv);rational.add(tf3);rational.add(jl1);
-		rational.add(lrv);rational.add(tf4);rational.add(jl2);
+		rational.add(kval);rational.add(valueOfKVAL);rational.add(new JLabel(""));
+		rational.add(ocv);rational.add(valueOfOCV);rational.add(jl1);
+		rational.add(lrv);rational.add(valueOfLRV);rational.add(jl2);
 		rational.setPreferredSize(new Dimension(300,80));
 		rational.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),"Rational Design Method"));
         jf.add(rational,c);
         
 		//// the panel for ***NRCS Design Method***
+        //c.gridwidth = 3;
         c.gridx = 0;
 		c.gridy = 7;
 		
@@ -278,9 +302,9 @@ public class ClimateFrame{
 		nrcs.setLayout(new GridLayout(1,3));
 		JLabel alr = new JLabel("Anaerobic Load Rate:");
 		JLabel jl3 = new JLabel("lbs VS/1000 cu.ft/day");
-		
-		tf5.setPreferredSize(new Dimension(50,20));
-		nrcs.add(alr);nrcs.add(tf5);nrcs.add(jl3);
+		valueOfAna = new JTextField();
+		valueOfAna.setPreferredSize(new Dimension(50,20));
+		nrcs.add(alr);nrcs.add(valueOfAna);nrcs.add(jl3);
 		nrcs.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),"NRCS Design Method"));
         jf.add(nrcs,c);
         
@@ -301,38 +325,16 @@ public class ClimateFrame{
 					
 				);
 		jbtn.add(bHelp);
-		jbtn.add(bOK);
-		
+		jbtn.add(bOK);		
         jf.add(jbtn,c);
  
 		
-		jf.setSize(600,500);
+		jf.setSize(600,520);
 		//setPreferredSize(getSize());
-		jf.setResizable(false);
+		//jf.setResizable(false);
 		jf.setVisible(true);
 		//setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
-	
-	private void AddTable(String[] s, Object[][] o) {
-		
-		if (jtab != null) {
-			jf.remove(jtab);
-			jtab = null;
-			mt = null;
-			nmt = null;
-			scrollPane = null;
-			
-		}
-		
-		jtab = new JPanel();
-		jtab.setLayout(new BorderLayout());	
-		
-		mt = new MyTable();
-		nmt = mt.buildMyTable(s, o);				
-		scrollPane = new JScrollPane(nmt);		
-        jtab.add(scrollPane,BorderLayout.CENTER);
-        jf.add(jtab,c);
-				
-	}
+
 
 }
