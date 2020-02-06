@@ -71,12 +71,12 @@ public class ClimateFrame{
 	};
 	
 	// the values in different textfields
+	
 	JTextField valueOfPre;
 	JTextField valueOfKVAL;
 	JTextField valueOfOCV;
 	JTextField valueOfLRV;
 	JTextField valueOfAna;
-
 
 
 	
@@ -278,7 +278,7 @@ public class ClimateFrame{
         
         JPanel other = new JPanel();
 		JLabel precipitation = new JLabel("25 Yr. -24 Hr. Storm Precipitation:");
-		valueOfPre = new JTextField();
+		valueOfPre = new JTextField("7.6");
 		valueOfPre.setPreferredSize(new Dimension(60,25));
 		JLabel inches = new JLabel("inches");		
 		other.add(precipitation);other.add(valueOfPre);other.add(inches);	
@@ -310,7 +310,7 @@ public class ClimateFrame{
 		FlowLayout flo3 = new FlowLayout(FlowLayout.LEFT);
 		barthKVAL.setLayout(flo3);		
 		JLabel kval = new JLabel("Barth KVAL:");
-		valueOfKVAL = new JTextField();
+		valueOfKVAL = new JTextField("0");
 		valueOfKVAL.setPreferredSize(new Dimension(65,25));
 		barthKVAL.add(kval);
 		barthKVAL.add(Box.createHorizontalStrut(65));
@@ -322,7 +322,7 @@ public class ClimateFrame{
 		FlowLayout flo4 = new FlowLayout(FlowLayout.LEFT);
 		loadRateForOCV.setLayout(flo4);	
 		JLabel ocv = new JLabel("Load Rate for Odor,OCV:");
-		valueOfOCV = new JTextField();
+		valueOfOCV = new JTextField("0");
 		valueOfOCV.setPreferredSize(new Dimension(65,25));
 		JLabel jl1 = new JLabel("lbx VS/cu. ft/day");
 		loadRateForOCV.add(ocv); loadRateForOCV.add(valueOfOCV); loadRateForOCV.add(jl1);
@@ -333,7 +333,7 @@ public class ClimateFrame{
 		FlowLayout flo5 = new FlowLayout(FlowLayout.LEFT);
 		LRVMax.setLayout(flo5);	
 		JLabel lrv = new JLabel("LRV Max:");
-		valueOfLRV = new JTextField();
+		valueOfLRV = new JTextField("0");
 		valueOfLRV.setPreferredSize(new Dimension(65,25));
 		JLabel jl2 = new JLabel("lbx VS/cu. ft/day");
 		LRVMax.add(lrv); 
@@ -348,7 +348,7 @@ public class ClimateFrame{
 		JPanel nrcs = new JPanel();
 		JLabel alr = new JLabel("Anaerobic Load Rate:");
 		JLabel jl3 = new JLabel("lbs VS/1000 cu.ft/day");
-		valueOfAna = new JTextField();
+		valueOfAna = new JTextField("6.2");
 		valueOfAna.setPreferredSize(new Dimension(65,25));
 		nrcs.add(alr);
 		nrcs.add(Box.createHorizontalStrut(10));
@@ -403,8 +403,8 @@ public class ClimateFrame{
 		bOK.addActionListener(new ActionListener() ////After selected the data source, open the climate frame with data;
 				{
 					public void actionPerformed(ActionEvent e){						
-							AnimalFrame af = new AnimalFrame();
-							af.buildAnimalFrame();
+							SelectAnimals sel = new SelectAnimals();
+							sel.buildSelectAnimals();
 						}
 						
 					}

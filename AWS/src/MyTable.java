@@ -43,7 +43,7 @@ public class MyTable implements TableModelListener{
 		int colcount = ntable.getColumnCount();
 		//setColor(0,rowcount-3,1,2, Color.yellow);
 		
-		setColor(rowcount-1,rowcount-1,1,colcount,Color.orange);	
+		setColor(rowcount-1,rowcount-1,1,colcount,Color.cyan);	
 			
 		//model.getColumnClass(0);
 		
