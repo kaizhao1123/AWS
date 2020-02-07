@@ -27,8 +27,8 @@ public class SelectAnimals {
 	JScrollPane choicesScrollPane;
 	JScrollPane selectedScrollPane;
 	
-	HashMap<String, JList<String>> choicesMap = new HashMap<>();          // K is the name of animal type, V is the JList respond the name
-	HashMap<JList<String>, String> selectedMap = new HashMap<>();		 // K is the JList which the V (element in JList) come from
+	HashMap<String, JList<String>> choicesMap = new HashMap<>();          // K is the name of animal type, V is the original JList respond the name
+	HashMap<String, JList<String>> selectedMap = new HashMap<>();		 // K is element,  V is the JList where the element come from
 	
 	String[] beefData = {"450-750lb Feeder", "Beef Cow", "Finishing Cattle"};
 	String[] dairyData = {"Calf(330 lb)", "Dry Cow", "Heifer(970 lb)", "Milker(100lb Milk)", 
@@ -85,26 +85,21 @@ public class SelectAnimals {
 	    choicesMap.put("beef", beef);
 	    choicesMap.put("dairy", dairy);
 	    
-	    
-	    System.out.println("cccccc");
-	    System.out.println(choicesMap.get("beef"));
-	    
-	    
-	    	 
-	    selectedModel = new DefaultListModel<>();
-	    InputElementIntoModel(dairyData,selectedModel);
-	    selectedList = new JList<String>(selectedModel); 	          
-	    selectedList.setFont(font);
+
 	      
 	  	 /****
 	  	  * right******
 	  	  */
 	    
+	    
 	    JPanel rightPanel = new JPanel();
 	    rightPanel.setLayout(new BorderLayout());
 		rightPanel.setPreferredSize(new Dimension(110,180));
 		
-		
+
+	    selectedModel = new DefaultListModel<>();	  
+	    selectedList = new JList<String>(selectedModel); 	          
+	    selectedList.setFont(font);
 		
 		selectedScrollPane = new JScrollPane(selectedList);
 	    rightPanel.add(jl3, BorderLayout.NORTH);
@@ -135,24 +130,42 @@ public class SelectAnimals {
 	      
 	      
 	      
-	    JButton add = new JButton("Add >");	
-	  /*add.addActionListener(new ActionListener() ////After selected the data source, open the climate frame with data;
+	      JButton add = new JButton("Add >");	
+	      add.addActionListener(new ActionListener() 
+					{
+						public void actionPerformed(ActionEvent e){	
+							addToSelectedList();
+							}							
+						}						
+					);
+    
+	      JButton remove = new JButton("< Remove");	
+	      remove.addActionListener(new ActionListener() 
 					{
 						public void actionPerformed(ActionEvent e){						
-								
-								
-							}
-							
-						}
-						
-					);*/
+							removeFromSelectedList();
+							}							
+						}						
+					);
 	      
+	      JButton addAll = new JButton("Add All >>");
+	      addAll.addActionListener(new ActionListener()
+					{
+						public void actionPerformed(ActionEvent e){						
+							addAllToSelectedList();
+							}							
+						}						
+					);
 	      
+	      JButton removeAll =new JButton("<Remove All");
+	      removeAll.addActionListener(new ActionListener() 
+					{
+						public void actionPerformed(ActionEvent e){						
+							removeAllFromSelectedList();
+							}							
+						}						
+					);
 	      
-	      
-	    JButton remove = new JButton("< Remove");	     
-	    JButton addAll = new JButton("Add All >>");	     
-	    JButton removeAll =new JButton("<Remove All");
 	      
 	    animalType.setFont(font);
 	    add.setFont(font);
@@ -220,5 +233,58 @@ public class SelectAnimals {
    	
      }
      
+     private void addToSelectedList() {
+     	int index = choicesList.getSelectedIndex();		
+     	if(index >= 0) {
+     		DefaultListModel<String> model = (DefaultListModel<String>) choicesList.getModel();
+     		String item = model.getElementAt(index);
+     		model.remove(index);
+     		selectedModel.addElement(item);	
+     		selectedMap.put(item, choicesList); 
+     	}		 	
+      }
+      
+      private void removeFromSelectedList() {
+
+     		int index = selectedList.getSelectedIndex();
+     		if(index >= 0) {
+         		DefaultListModel<String> model = (DefaultListModel<String>) selectedList.getModel();
+         		String item = model.getElementAt(index);							
+         		model.remove(index);
+         		JList oldList =  selectedMap.get(item);							
+         		DefaultListModel<String> oldModel = (DefaultListModel<String>) oldList.getModel();
+         		oldModel.addElement(item);			
+         		selectedMap.remove(item, oldList);
+     		}
+  	   	 					
+  	
+      }
+      
+      private void addAllToSelectedList() {
+     	DefaultListModel<String> model = (DefaultListModel<String>) choicesList.getModel();
+     	int size = model.getSize();  	
+     	for(int i = size - 1; i >= 0; i --) {     		
+      		String item = model.getElementAt(i);
+      		model.remove(i);
+      		selectedModel.addElement(item);	
+      		selectedMap.put(item, choicesList);
+     	}   	 
+      }
+      
+      private void removeAllFromSelectedList() {
+     	 
+      	DefaultListModel<String> model = (DefaultListModel<String>) selectedList.getModel();     	
+     	int size = model.getSize();  
+     	
+     	for(int i = size - 1; i >= 0; i --) {  
+     		String item = model.getElementAt(i);							
+     		model.remove(i);
+     		JList oldList =  selectedMap.get(item);							
+     		DefaultListModel<String> oldModel = (DefaultListModel<String>) oldList.getModel();
+     		oldModel.addElement(item);			
+     		selectedMap.remove(item, oldList);
+      		
+     	} 
+      }
 }   
      
