@@ -15,25 +15,11 @@ public class Main extends JFrame {
 		//String[] data = InputData.readTextFile("test.txt");
 		
 		String path = "C:/Users/kaizhao/Desktop/AWSdata.xlsx";
-    	InputData example = new InputData(path);
-    	example.readSheet("Climate");
-
-    	
-    	
-    	ArrayList<InputData.stationInfo> stateList = example.filterByState("AK", example.allData);
-
-    	ArrayList<InputData.stationInfo> countyList = example.filterByCounty("ALASKA", stateList);
-
-    	
-    	for(InputData.stationInfo ele : countyList) {
-    		System.out.println(ele.name);
-    	}
-    	
+		InputData example = new InputData(path);
 		
-		
-		
+		System.out.println("read excel");
 		MainFrame frame = new MainFrame();
-		frame.buildFrame();
+		frame.buildFrame(example);
 	
 	}
 	

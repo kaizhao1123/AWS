@@ -7,6 +7,11 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
@@ -24,38 +29,17 @@ import javax.swing.JTextField;
 
 
 
+
 public class ClimateFrame{
 	
-	private String[] columnName;
-	private Object[][] data;
-	private JFrame jf;
-	//private GridBagConstraints c;
-	
-	MyTable mt1 = new MyTable();  // used for download the existing AWM data
-	MyTable mt2 = new MyTable();  // used for input data by the custom
-	
-	JLabel label;
-	JTable databaseTable;
-	JTable customTable;
-	JScrollPane scrollPane;
-
-	String[] s = {" ","Prec(in)","Evap(in)"};
-	Object[][] o1 = {
-	 		    {"January","1.20","1.41"},    
-	            {"February","1.22","1.41"}, 
-	            {"March","3.13","2.82"}, 
-	            {"April","3.38","4.23"}, 
-	            {"May","4.82","5.64"}, 
-	            {"June","5.44","6.58"}, 
-	            {"July","3.90","7.05"}, 
-	            {"August","4.17","6.58"}, 
-	            {"September","4.81","4.70"}, 
-	            {"October","3.79","3.29"}, 
-	            {"November","2.58","1.88"}, 
-	            {"December","1.48","1.41"},
-	};
-	
-	Object[][] o2 = {
+	// Initial the data structure
+	ArrayList<InputData.stationInfo> climateData;
+	ArrayList<InputData.stationInfo> countyData;
+	ArrayList<InputData.stationInfo> stationData;
+	String[] months = {"January","February","March","April","May","June","July","August","September","October","November","December"};
+	String[] tableColumnName = {" ","Prec(in)","Evap(in)"};
+	Object[][] tableData1;
+	Object[][] tableData2 = {
  		    {"January","0.00","0.00"},    
             {"February","0.00","0.00"}, 
             {"March","0.00","0.00"}, 
@@ -70,8 +54,18 @@ public class ClimateFrame{
             {"December","0.00","0.00"},
 	};
 	
-	// the values in different textfields
+	// Initial the frame structure
+	JFrame jf;
 	
+	MyTable mt1 = new MyTable();  // used for download the existing AWM data
+	MyTable mt2 = new MyTable();  // used for input data by the custom
+	
+	JLabel label;
+	JTable databaseTable;
+	JTable customTable;
+	JScrollPane scrollPane;
+	
+	// the values in different textfields	
 	JTextField valueOfPre;
 	JTextField valueOfKVAL;
 	JTextField valueOfOCV;
@@ -80,10 +74,63 @@ public class ClimateFrame{
 
 
 	
-	public void buildClimateFrame() {		
+	public void buildClimateFrame(ArrayList<InputData.stationInfo> data) {		
 		
-		jf = new JFrame();
+		climateData = data;
 		
+		// Initial data
+		countyData = new ArrayList<InputData.stationInfo>();
+		tableData1 = getTableData(climateData.get(0));
+		for(int i = 0; i < climateData.size(); i ++) {
+			String s = climateData.get(i).county;
+			if(s == climateData.get(0).county)
+				countyData.add(climateData.get(i));
+		}
+		
+		
+		
+		
+    	/***k***
+    	 * Get all county with corresponding stations from the climateData, and to show in "select county:" and "select station:"
+    	 ***z***/
+		
+		HashMap<String, ArrayList<String>> countyStationMap = new HashMap<>();
+		for(InputData.stationInfo element : climateData) { 			
+			String key = element.county;
+			if(!countyStationMap.containsKey(key)) {
+				ArrayList<String> value = new ArrayList<>();
+	    		countyStationMap.put(key, value);   	
+			}
+			else
+				countyStationMap.get(key).add(element.name);				
+    	}
+		
+		
+		
+		System.out.println("cccc");
+		System.out.println(countyStationMap.size());
+		
+		
+		/*
+    	HashSet allCountyNames = new HashSet();   	
+    	for(InputData.stationInfo element : climateData) {  		
+    		allCountyNames.add(element.county);   		
+    	}
+    	
+		for(InputData.stationInfo ele : climateData) {
+			if(ele.state.equals(countyName)) {
+				countyData.add(ele);
+			}
+		}*/
+    	
+
+		
+    	/***k***
+		 * Set up the layout and add components into it
+		 ***z***/
+		
+		
+		jf = new JFrame();		
 		BorderLayout border= new BorderLayout();  //split the screen into two parts: 	A. firstLine(north), B.secondPart(center)
 		jf.setLayout(border);
 		jf.setTitle("Climate Selection");
@@ -91,6 +138,7 @@ public class ClimateFrame{
 		
 		
 		// build actionlisterner for button to show whether the action works or not
+		
 			
 		ActionListener sliceActionListener = new ActionListener() {
 		      public void actionPerformed(ActionEvent actionEvent) {
@@ -136,7 +184,7 @@ public class ClimateFrame{
 					valueOfLRV.setText("0");
 					valueOfAna.setText("6.2");
 					scrollPane.setViewportView(databaseTable);				
-					System.out.println("aaaaaaaaaaa");					
+					//System.out.println("aaaaaaaaaaa");					
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -156,7 +204,7 @@ public class ClimateFrame{
 					valueOfLRV.setText("0");
 					valueOfAna.setText("0");
 					scrollPane.setViewportView(customTable);
-			        System.out.println("bbbbb");			        
+			       // System.out.println("bbbbb");			        
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -227,44 +275,95 @@ public class ClimateFrame{
 		JPanel couPanel = new JPanel();
 		FlowLayout flo1 = new FlowLayout();
 		couPanel.setLayout(flo1);
-		JLabel county = new JLabel("Select County:");		
-		String listOfCounty[] = {"Allen","Anderson","Chase"};
-		JComboBox bCounty = new JComboBox(listOfCounty);
+		JLabel county = new JLabel("Select County:");
+		
+		//String[] listOfCounty = countyStationMap.keySet().toArray(new String[countyStationMap.size()]);   //can't sort
+		
+		String[] listOfCounty = new String[countyStationMap.size()];				
+		Set<String> keySet = countyStationMap.keySet();
+		int count = 0;
+		for(String s : keySet) {
+			listOfCounty[count] = s;
+			count++;
+		}				
+		Arrays.sort(listOfCounty);	
+		
+		
+		
+		JComboBox bCounty = new JComboBox(listOfCounty);				
 		bCounty.setPreferredSize(new Dimension(230,25));
-		bCounty.setSelectedIndex(0);
-		bCounty.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e){
-				try {
-					bCounty.getSelectedIndex();				
-				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}
-		});
+		//bCounty.setSelectedIndex(0);
+		bCounty.addActionListener(new ActionListener()                //state listener: select different state name to get corresponding data.
+				{
+					public void actionPerformed(ActionEvent e){
+						try {
+							int index = bCounty.getSelectedIndex();
+							String countyName = listOfCounty[index];							
+							countyData = new ArrayList<>();
+							for(InputData.stationInfo ele : climateData) {
+								if(ele.state.equals(countyName)) {
+									countyData.add(ele);
+								}
+							}						
+						} catch (Exception e1) {
+							e1.printStackTrace();
+						}
+					}
+				});
 		couPanel.add(county);couPanel.add(bCounty);
+		
+		//***************************************************************
+		
+    	/***k***
+    	 * Get all station names from the countyData, and to show in "select station:"
+    	 ***z***/
+    	
+		/*HashSet allStationNames = new HashSet();   	
+    	for(InputData.stationInfo element : countyData) {  		
+    		allStationNames.add(element.name);   		
+    	}*/
+    	
+    	
+    	System.out.println("bbbb");
+		System.out.println(countyData.size());
+    	//****************************************************************
 				
 		// B.L.1.2 : the panel for "station"
 		JPanel staPanel = new JPanel();
 		FlowLayout flo2 = new FlowLayout();
 		couPanel.setLayout(flo2);
 		JLabel station = new JLabel("Select Station:");
-		String listOfStation[] = {"Allen","Anderson","Chase"};		
+		//String listOfStation[] = {"Allen","Anderson","Chase"};
+		
+		ArrayList<String> firstCounty = countyStationMap.get(listOfCounty[0]);
+		String[] listOfStation = new String[firstCounty.size()];		
+		for(int i = 0; i < firstCounty.size(); i ++) {
+			listOfStation[i] = firstCounty.get(i);
+		}
+		Arrays.sort(listOfStation);		
+		
+		
 		JComboBox bStation = new JComboBox(listOfStation);
 		bStation.setPreferredSize(new Dimension(230,25));
-		bStation.setSelectedIndex(0);
-		bStation.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e){
-				try {
-					bStation.getSelectedIndex();				
-				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}
-		});
+		//bStation.setSelectedIndex(0);
+		bStation.addActionListener(new ActionListener()                //state listener: select different state name to get corresponding data.
+				{
+					public void actionPerformed(ActionEvent e){
+						try {
+							int index = bStation.getSelectedIndex();
+							String stationName = listOfStation[index];							
+							stationData = new ArrayList<>();
+							for(InputData.stationInfo ele : countyData) {
+								if(ele.name.equals(stationName)) {
+									stationData.add(ele);
+								}
+							}
+							tableData1 = getTableData(stationData.get(index));
+						} catch (Exception e1) {
+							e1.printStackTrace();
+						}
+					}
+				});
 		staPanel.add(station);staPanel.add(bStation);
 
 		location.add(couPanel);location.add(staPanel);
@@ -381,8 +480,8 @@ public class ClimateFrame{
 		JPanel jtab = new JPanel();
 		jtab.setLayout(new BorderLayout());	
 				
-		databaseTable = mt1.buildMyTable(s, o1);	// the table with data from the AWS
-		customTable = mt2.buildMyTable(s, o2);      // the table without data.
+		databaseTable = mt1.buildMyTable(tableColumnName, tableData1);	// the table with data from the AWS
+		customTable = mt2.buildMyTable(tableColumnName, tableData2);      // the table without data.
 
 		scrollPane = new JScrollPane(databaseTable);	
 		scrollPane.setPreferredSize(new Dimension(210,250));
@@ -424,6 +523,14 @@ public class ClimateFrame{
 		//jf.setResizable(false);
 		jf.setVisible(true);
 		//setDefaultCloseOperation(EXIT_ON_CLOSE);
+	}
+	
+	public Object[][] getTableData(InputData.stationInfo s){
+		Object[][] res = new Object[12][3];
+		for(int i = 0; i < res.length; i ++) {
+			res[i] = new String[] {months[i], s.data[1+i], s.data[13+i]};			
+		}		
+		return res;
 	}
 
 

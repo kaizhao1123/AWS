@@ -1,27 +1,49 @@
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
+
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
-public class MainFrame extends JFrame{
 
-	String [] data = new String[] {};
+
+public class MainFrame extends JFrame{
+	
+	InputData excelData;
+	ArrayList<InputData.stationInfo> stateList;
+	
 	String ownerName;
 	String designerName;
+			
+	public void buildFrame(InputData data) throws IOException{
+		
+		excelData = data;   	
+    	excelData.readSheet("Climate");
+
+    	
+    	/***k***
+    	 * Get all state names from the excelData, and to show in "select state:"
+    	 ***z***/
+    	HashSet allStateNames = new HashSet();
+    	allStateNames.add(" ");
+    	for(InputData.stationInfo element : excelData.allData) {  		
+    		allStateNames.add(element.state);   		
+    	}
+
 	
-	
-	public void buildFrame(){
+		/***k***
+		 * Set up the layout and add components into it
+		 ***z***/
+				
 		GridBagLayout grid = new GridBagLayout();
 		GridBagConstraints gbc = new GridBagConstraints();		
 		this.setLayout(grid);
@@ -36,29 +58,24 @@ public class MainFrame extends JFrame{
 		gbc.gridy = 0;
 		this.add(new JLabel("Landowner:"), gbc);
 		
-		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.gridx = 3;
 		gbc.gridy = 0;		
 		this.add(new JTextField(),gbc);
 		
 		// add *** Designer ***		
-		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.gridx = 1;
 		gbc.gridy = 2;
 		this.add(new JLabel("Designer:"), gbc);
 				
-		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.gridx = 3;
 		gbc.gridy = 2;		
 		this.add(new JTextField(),gbc);
 		
 		// add *** Data Source ***
-		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.gridx = 1;
 		gbc.gridy = 4;
 		this.add(new JLabel("Data Source:"), gbc);
 						 
-		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.gridx = 3;
 		gbc.gridy = 4;
 		String[] source = {" ","MWPS","NRCS-2008}"};
@@ -78,7 +95,6 @@ public class MainFrame extends JFrame{
 		this.add(ds, gbc);
 		
 		// add  ***Select State ***
-		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.gridx = 1;
 		gbc.gridy = 6;
 		this.add(new JLabel("Select State:"), gbc);
@@ -87,21 +103,21 @@ public class MainFrame extends JFrame{
 		gbc.gridx = 3;
 		gbc.gridy = 6;
 		gbc.ipadx = 20; 
-		String[] state = {" ","AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID",
-							  "IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS",
-							  "MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK",
-							  "OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV",
-							  "WI","WY"};
+		
+		String[] state = new String[allStateNames.size()];
+		allStateNames.toArray(state);
+		Arrays.sort(state);		
 		JComboBox st = new JComboBox(state);
 		st.setSelectedIndex(0);
-		st.addActionListener(new ActionListener()
+		st.addActionListener(new ActionListener()                //state listener: select different state name to get corresponding data.
 		{
 			public void actionPerformed(ActionEvent e){
 				try {
-					st.getSelectedIndex();
-					
+					int index = st.getSelectedIndex();
+					String stateName = state[index];
+					stateList = excelData.filterByState(stateName, excelData.allData);
+					//System.out.println(stateList.size());					
 				} catch (Exception e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			}
@@ -114,66 +130,52 @@ public class MainFrame extends JFrame{
 		gbc.gridy = 8;
 		this.add(new JButton("Operating Period Setup"), gbc);
 		
-		gbc.fill = GridBagConstraints.HORIZONTAL;
+		//gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.gridx = 3;
 		gbc.gridy = 10;
 		this.add(new JLabel("<html> Click button above to define or <br> modify the operating period(s) </html>"), gbc);
 	
 		// add  *** OK ***
-		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.gridx = 5;
 		gbc.gridy = 8;
 		gbc.ipadx = 20;
-		JButton b1 = new JButton("OK");
-		b1.addActionListener(new ActionListener() ////After selected the data source, open the climate frame with data;
+		JButton okBt = new JButton("OK");
+		okBt.addActionListener(new ActionListener()                   //After selected the data source, open the climate frame with data;
 		{
 			public void actionPerformed(ActionEvent e){
 				if(ds.getSelectedIndex() == 0){
-					System.out.print("Nothing selected"); /////////must select one data source, otherwise, the button doesn't work					
+					System.out.print("Nothing selected");            //must select one data source, otherwise, the button doesn't work					
 				}
-				else if(ds.getSelectedIndex() == 1 && st.getSelectedIndex() != 0){ /////////select the first data source
+				else if( (ds.getSelectedIndex() == 1 || ds.getSelectedIndex() == 2) && st.getSelectedIndex() != 0){     //select the first or second data source
 
 					try {
-						data = InputData.readTextFile("test.txt") ;
+						ClimateFrame cf = new ClimateFrame();
+						cf.buildClimateFrame(stateList);
+						
 					} catch (Exception e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
-					}
-					for(String s : data){
-						System.out.print(s);
-					}
-					ClimateFrame cf = new ClimateFrame();
-					cf.buildClimateFrame();
-				}
-				else if(ds.getSelectedIndex() == 2 && st.getSelectedIndex() != 0){/////////select the second data source
-					//String[] data = new String[]{};
-					try {
-						data = InputData.readTextFile("test1.txt");
-					} catch (Exception e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-					for(String s : data){
-						System.out.print(s);
-					}
-					ClimateFrame cf = new ClimateFrame();
-					cf.buildClimateFrame();
-				}
-				
-			}
-			
+					}					
+				}			
+			}			
 		});
-		this.add(b1, gbc);
+		this.add(okBt, gbc);
 		
 		// add  *** Cancel ***
-		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.gridx = 5;
 		gbc.gridy = 10;
 		gbc.ipadx = 20;
-		this.add(new JButton("Cancel"), gbc);
+		JButton cancelBt = new JButton("Cancel");
+		
+		cancelBt.addActionListener(new ActionListener()                   //After selected the data source, open the climate frame with data;
+				{
+					public void actionPerformed(ActionEvent e){
+						dispose();
+						//frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+					}			
+				});
+		this.add(cancelBt, gbc);
 		
 		// add  *** Help ***
-		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.gridx = 5;
 		gbc.gridy = 12;
 		gbc.ipadx = 20;
@@ -184,12 +186,6 @@ public class MainFrame extends JFrame{
 		setPreferredSize(getSize());
 		setResizable(false);
 		setVisible(true);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		
-	}
-	
-	
-	
-	
-	
+		setDefaultCloseOperation(EXIT_ON_CLOSE);		
+	}				
 }
