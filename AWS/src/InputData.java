@@ -82,6 +82,7 @@ public class InputData {
 		return list;
 	}
 	
+	/*
 	public ArrayList<stationInfo> filterByCounty(String countyName, ArrayList<stationInfo> upperLevelData) {
 		ArrayList<stationInfo> list = new ArrayList<>();
 		for(stationInfo ele : upperLevelData) {
@@ -90,7 +91,7 @@ public class InputData {
 			}
 		}		
 		return list;
-	}
+	}*/
 
 	
 }

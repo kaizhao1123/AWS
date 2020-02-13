@@ -17,6 +17,7 @@ import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -30,15 +31,17 @@ import javax.swing.JTextField;
 
 
 
+
+
 public class ClimateFrame{
 	
 	// Initial the data structure
 	ArrayList<InputData.stationInfo> climateData;
 	ArrayList<InputData.stationInfo> countyData;
-	ArrayList<InputData.stationInfo> stationData;
+	InputData.stationInfo currentElement;
 	String[] months = {"January","February","March","April","May","June","July","August","September","October","November","December"};
 	String[] tableColumnName = {" ","Prec(in)","Evap(in)"};
-	Object[][] tableData1;
+	Object[][] tableData1;      //custom data
 	Object[][] tableData2 = {
  		    {"January","0.00","0.00"},    
             {"February","0.00","0.00"}, 
@@ -71,27 +74,34 @@ public class ClimateFrame{
 	JTextField valueOfOCV;
 	JTextField valueOfLRV;
 	JTextField valueOfAna;
-
+	JComboBox bCounty;
+	JComboBox bStation = new JComboBox();;
 
 	
 	public void buildClimateFrame(ArrayList<InputData.stationInfo> data) {		
 		
 		climateData = data;
 		
-		// Initial data
-		countyData = new ArrayList<InputData.stationInfo>();
-		tableData1 = getTableData(climateData.get(0));
+		// Initial data (to get the first(current) element info and show in the frame)
+		
+		currentElement = climateData.get(0);			
+		countyData = new ArrayList<InputData.stationInfo>();		
 		for(int i = 0; i < climateData.size(); i ++) {
 			String s = climateData.get(i).county;
-			if(s == climateData.get(0).county)
+			if(s == currentElement.county)
 				countyData.add(climateData.get(i));
 		}
-		
+		tableData1 = getTableData(currentElement);
+		valueOfPre = new JTextField(currentElement.data[0]);
+		valueOfKVAL = new JTextField(currentElement.data[25]);
+		valueOfOCV = new JTextField(currentElement.data[27]);
+		valueOfLRV = new JTextField(currentElement.data[28]);
+		valueOfAna = new JTextField(currentElement.data[26]);
 		
 		
 		
     	/***k***
-    	 * Get all county with corresponding stations from the climateData, and to show in "select county:" and "select station:"
+    	 * Get all county names with corresponding stations from the climateData, and to show in "select county:" and "select station:"
     	 ***z***/
 		
 		HashMap<String, ArrayList<String>> countyStationMap = new HashMap<>();
@@ -99,43 +109,22 @@ public class ClimateFrame{
 			String key = element.county;
 			if(!countyStationMap.containsKey(key)) {
 				ArrayList<String> value = new ArrayList<>();
+				value.add(element.name);
 	    		countyStationMap.put(key, value);   	
 			}
 			else
 				countyStationMap.get(key).add(element.name);				
-    	}
-		
-		
-		
-		System.out.println("cccc");
-		System.out.println(countyStationMap.size());
-		
-		
-		/*
-    	HashSet allCountyNames = new HashSet();   	
-    	for(InputData.stationInfo element : climateData) {  		
-    		allCountyNames.add(element.county);   		
-    	}
-    	
-		for(InputData.stationInfo ele : climateData) {
-			if(ele.state.equals(countyName)) {
-				countyData.add(ele);
-			}
-		}*/
-    	
-
+    	}   
 		
     	/***k***
 		 * Set up the layout and add components into it
-		 ***z***/
-		
+		 ***z***/		
 		
 		jf = new JFrame();		
 		BorderLayout border= new BorderLayout();  //split the screen into two parts: 	A. firstLine(north), B.secondPart(center)
 		jf.setLayout(border);
 		jf.setTitle("Climate Selection");
-		
-		
+				
 		
 		// build actionlisterner for button to show whether the action works or not
 		
@@ -176,15 +165,13 @@ public class ClimateFrame{
 		{
 			public void actionPerformed(ActionEvent e){
 				try {
-					r1.setSelected(true);
-					
-					valueOfPre.setText("7.6");
-					valueOfKVAL.setText("0");
-					valueOfOCV.setText("0");
-					valueOfLRV.setText("0");
-					valueOfAna.setText("6.2");
-					scrollPane.setViewportView(databaseTable);				
-					//System.out.println("aaaaaaaaaaa");					
+					r1.setSelected(true);					
+					valueOfPre.setText(currentElement.data[0]);
+					valueOfKVAL.setText(currentElement.data[25]);
+					valueOfOCV.setText(currentElement.data[27]);
+					valueOfLRV.setText(currentElement.data[28]);
+					valueOfAna.setText(currentElement.data[26]);					
+					scrollPane.setViewportView(databaseTable);									
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -203,8 +190,7 @@ public class ClimateFrame{
 					valueOfOCV.setText("0");
 					valueOfLRV.setText("0");
 					valueOfAna.setText("0");
-					scrollPane.setViewportView(customTable);
-			       // System.out.println("bbbbb");			        
+					scrollPane.setViewportView(customTable);		        
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -276,9 +262,7 @@ public class ClimateFrame{
 		FlowLayout flo1 = new FlowLayout();
 		couPanel.setLayout(flo1);
 		JLabel county = new JLabel("Select County:");
-		
-		//String[] listOfCounty = countyStationMap.keySet().toArray(new String[countyStationMap.size()]);   //can't sort
-		
+				
 		String[] listOfCounty = new String[countyStationMap.size()];				
 		Set<String> keySet = countyStationMap.keySet();
 		int count = 0;
@@ -290,21 +274,26 @@ public class ClimateFrame{
 		
 		
 		
-		JComboBox bCounty = new JComboBox(listOfCounty);				
+		bCounty = new JComboBox(listOfCounty);				
 		bCounty.setPreferredSize(new Dimension(230,25));
 		//bCounty.setSelectedIndex(0);
 		bCounty.addActionListener(new ActionListener()                //state listener: select different state name to get corresponding data.
 				{
 					public void actionPerformed(ActionEvent e){
 						try {
+							
 							int index = bCounty.getSelectedIndex();
 							String countyName = listOfCounty[index];							
 							countyData = new ArrayList<>();
 							for(InputData.stationInfo ele : climateData) {
-								if(ele.state.equals(countyName)) {
+								if(ele.county.equals(countyName)) {
 									countyData.add(ele);
 								}
-							}						
+							}												
+							ArrayList<String> countyValue = countyStationMap.get(countyName);
+							String[] staList = convertToStringList(countyValue);
+							DefaultComboBoxModel stationModel = new DefaultComboBoxModel(staList);		
+							bStation.setModel(stationModel);							
 						} catch (Exception e1) {
 							e1.printStackTrace();
 						}
@@ -317,15 +306,8 @@ public class ClimateFrame{
     	/***k***
     	 * Get all station names from the countyData, and to show in "select station:"
     	 ***z***/
-    	
-		/*HashSet allStationNames = new HashSet();   	
-    	for(InputData.stationInfo element : countyData) {  		
-    		allStationNames.add(element.name);   		
-    	}*/
-    	
-    	
-    	System.out.println("bbbb");
-		System.out.println(countyData.size());
+  
+
     	//****************************************************************
 				
 		// B.L.1.2 : the panel for "station"
@@ -333,39 +315,36 @@ public class ClimateFrame{
 		FlowLayout flo2 = new FlowLayout();
 		couPanel.setLayout(flo2);
 		JLabel station = new JLabel("Select Station:");
-		//String listOfStation[] = {"Allen","Anderson","Chase"};
 		
 		ArrayList<String> firstCounty = countyStationMap.get(listOfCounty[0]);
-		String[] listOfStation = new String[firstCounty.size()];		
-		for(int i = 0; i < firstCounty.size(); i ++) {
-			listOfStation[i] = firstCounty.get(i);
-		}
-		Arrays.sort(listOfStation);		
-		
-		
-		JComboBox bStation = new JComboBox(listOfStation);
+		String[] listOfStation = convertToStringList(firstCounty);			
+				
+		DefaultComboBoxModel stationModel = new DefaultComboBoxModel( listOfStation );		
+		bStation.setModel(stationModel);	
 		bStation.setPreferredSize(new Dimension(230,25));
-		//bStation.setSelectedIndex(0);
 		bStation.addActionListener(new ActionListener()                //state listener: select different state name to get corresponding data.
 				{
 					public void actionPerformed(ActionEvent e){
 						try {
 							int index = bStation.getSelectedIndex();
-							String stationName = listOfStation[index];							
-							stationData = new ArrayList<>();
-							for(InputData.stationInfo ele : countyData) {
-								if(ele.name.equals(stationName)) {
-									stationData.add(ele);
-								}
-							}
-							tableData1 = getTableData(stationData.get(index));
+							String stationName = listOfStation[index];
+							currentElement = countyData.get(index);
+							tableData1 = getTableData(currentElement);          //update table
+							databaseTable = mt1.buildMyTable(tableColumnName, tableData1);
+							scrollPane.setViewportView(databaseTable);
+							
+							valueOfPre.setText(currentElement.data[0]);
+							valueOfKVAL.setText(currentElement.data[25]);
+							valueOfOCV.setText(currentElement.data[27]);
+							valueOfLRV.setText(currentElement.data[28]);
+							valueOfAna.setText(currentElement.data[26]);
+							
 						} catch (Exception e1) {
 							e1.printStackTrace();
 						}
 					}
 				});
 		staPanel.add(station);staPanel.add(bStation);
-
 		location.add(couPanel);location.add(staPanel);
 		secondLeft.add(location,gbcTwoLeft);   // add "location" to second left.
 			
@@ -377,7 +356,6 @@ public class ClimateFrame{
         
         JPanel other = new JPanel();
 		JLabel precipitation = new JLabel("25 Yr. -24 Hr. Storm Precipitation:");
-		valueOfPre = new JTextField("7.6");
 		valueOfPre.setPreferredSize(new Dimension(60,25));
 		JLabel inches = new JLabel("inches");		
 		other.add(precipitation);other.add(valueOfPre);other.add(inches);	
@@ -409,7 +387,6 @@ public class ClimateFrame{
 		FlowLayout flo3 = new FlowLayout(FlowLayout.LEFT);
 		barthKVAL.setLayout(flo3);		
 		JLabel kval = new JLabel("Barth KVAL:");
-		valueOfKVAL = new JTextField("0");
 		valueOfKVAL.setPreferredSize(new Dimension(65,25));
 		barthKVAL.add(kval);
 		barthKVAL.add(Box.createHorizontalStrut(65));
@@ -421,7 +398,6 @@ public class ClimateFrame{
 		FlowLayout flo4 = new FlowLayout(FlowLayout.LEFT);
 		loadRateForOCV.setLayout(flo4);	
 		JLabel ocv = new JLabel("Load Rate for Odor,OCV:");
-		valueOfOCV = new JTextField("0");
 		valueOfOCV.setPreferredSize(new Dimension(65,25));
 		JLabel jl1 = new JLabel("lbx VS/cu. ft/day");
 		loadRateForOCV.add(ocv); loadRateForOCV.add(valueOfOCV); loadRateForOCV.add(jl1);
@@ -432,7 +408,6 @@ public class ClimateFrame{
 		FlowLayout flo5 = new FlowLayout(FlowLayout.LEFT);
 		LRVMax.setLayout(flo5);	
 		JLabel lrv = new JLabel("LRV Max:");
-		valueOfLRV = new JTextField("0");
 		valueOfLRV.setPreferredSize(new Dimension(65,25));
 		JLabel jl2 = new JLabel("lbx VS/cu. ft/day");
 		LRVMax.add(lrv); 
@@ -446,8 +421,7 @@ public class ClimateFrame{
         // B.L.3.3 : the panel for "NRCS design method"
 		JPanel nrcs = new JPanel();
 		JLabel alr = new JLabel("Anaerobic Load Rate:");
-		JLabel jl3 = new JLabel("lbs VS/1000 cu.ft/day");
-		valueOfAna = new JTextField("6.2");
+		JLabel jl3 = new JLabel("lbs VS/1000 cu.ft/day");		
 		valueOfAna.setPreferredSize(new Dimension(65,25));
 		nrcs.add(alr);
 		nrcs.add(Box.createHorizontalStrut(10));
@@ -532,6 +506,14 @@ public class ClimateFrame{
 		}		
 		return res;
 	}
-
+	
+	public String[] convertToStringList(ArrayList<String> list) {
+		String[] sList = new String[list.size()];
+		for(int i = 0; i < list.size();i++) {
+			sList[i] = list.get(i);
+		}
+		Arrays.sort(sList);	
+		return sList;
+	}
 
 }
